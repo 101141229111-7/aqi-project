@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AQI Prediction</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            margin: 50px auto;
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 8px;
+            border-radius: 8px;
+            border: 1px solid gray;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🌍 AQI Prediction</h1>
+
+    <form action="/predict" method="post">
+
+    <input type="text" name="pm25" value="80" placeholder="PM2.5"><br>
+    <input type="text" name="pm10" value="90" placeholder="PM10"><br>
+    <input type="text" name="no2" value="100" placeholder="NO2"><br>
+    <input type="text" name="so2" value="70" placeholder="SO2"><br>
+    <input type="text" name="co" value="1" placeholder="CO"><br>
+    <input type="text" name="o3" value="80" placeholder="O3"><br>
+
+    <button type="submit">Predict</button>
+
+</form>
+
+    {% if result %}
+    <div class="result">
+        <h2>Predicted AQI: {{ result }}</h2>
+        <h2 style="color: {{ color }}">Category: {{ category }}</h2>
+        <h3>{{ message }}</h3>
+    </div>
+    {% endif %}
+</div>
+<script>
+    {% if category %}
+        alert("Air Quality: {{ category }}\n{{ message }}");
+    {% endif %}
+</script>
+</body>
+</html>
+
+<a href="/graph">
+    <button>View AQI Graph</button>
+</a>
+
+
+{% if alert %}
+<script>
+alert("{{ alert }}");
+</script>
+{% endif %}
