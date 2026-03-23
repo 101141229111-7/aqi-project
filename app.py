@@ -11,7 +11,7 @@ model = pickle.load(open('model.pkl', 'rb'))
 
 def send_email_alert(aqi_value):
     sender_email = "janu012006@gmail.com"
-    receiver_email = "splmaharaja8838@gmail.com"
+    receiver_email = "janu012006@gmail.com"
     password = "rbwomtistqwtpasf"
 
     message = f"⚠️ Alert! AQI Level is {aqi_value}. Air quality is unhealthy. Please take precautions."
