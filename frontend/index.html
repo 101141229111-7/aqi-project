@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AQI Prediction</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            margin: 50px auto;
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 8px;
+            border-radius: 8px;
+            border: 1px solid gray;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 10px;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🌍 AQI Prediction</h1>
+
+    <form id="predictForm">
+        <input type="text" id="pm25" value="80" placeholder="PM2.5"><br>
+        <input type="text" id="pm10" value="90" placeholder="PM10"><br>
+        <input type="text" id="no2" value="100" placeholder="NO2"><br>
+        <input type="text" id="so2" value="70" placeholder="SO2"><br>
+        <input type="text" id="co" value="1" placeholder="CO"><br>
+        <input type="text" id="o3" value="80" placeholder="O3"><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    <p id="loading">Predicting...</p>
+
+    <div class="result" id="result" style="display:none;">
+        <h2>Predicted AQI: <span id="aqiValue"></span></h2>
+        <h2 id="categoryText"></h2>
+        <h3 id="messageText"></h3>
+    </div>
+</div>
+
+<br>
+<a href="graph.html">
+    <button>View AQI Graph</button>
+</a>
+
+<script src="config.js"></script>
+<script>
+    // Load default prediction on page load
+    window.addEventListener('load', () => {
+        fetch(BACKEND_URL + '/')
+            .then(res => res.json())
+            .then(data => showResult(data))
+            .catch(err => console.error('Could not load default prediction:', err));
+    });
+
+    document.getElementById('predictForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const loading = document.getElementById('loading');
+        loading.style.display = 'block';
+
+        const payload = {
+            pm25: document.getElementById('pm25').value,
+            pm10: document.getElementById('pm10').value,
+            no2: document.getElementById('no2').value,
+            so2: document.getElementById('so2').value,
+            co: document.getElementById('co').value,
+            o3: document.getElementById('o3').value
+        };
+
+        fetch(BACKEND_URL + '/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            loading.style.display = 'none';
+            showResult(data);
+        })
+        .catch(err => {
+            loading.style.display = 'none';
+            console.error('Prediction error:', err);
+        });
+    });
+
+    function showResult(data) {
+        document.getElementById('aqiValue').textContent = data.aqi;
+        document.getElementById('categoryText').textContent = 'Category: ' + data.category;
+        document.getElementById('categoryText').style.color = data.color;
+        document.getElementById('messageText').textContent = data.message;
+        document.getElementById('result').style.display = 'block';
+
+        if (data.alert) {
+            alert(data.alert);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AQI Graphs</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 900px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        #loading {
+            color: gray;
+            font-size: 18px;
+            margin: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📊 AQI Data Visualization</h1>
+    <p id="loading">Loading graphs...</p>
+
+    <div id="graph1Container">
+        <h2>AQI Trend</h2>
+        <div id="graph1"></div>
+    </div>
+
+    <div id="graph2Container">
+        <h2>Pollutant Comparison</h2>
+        <div id="graph2"></div>
+    </div>
+
+    <div id="graph3Container">
+        <h2>PM2.5 vs AQI</h2>
+        <div id="graph3"></div>
+    </div>
+
+    <br><br>
+    <a href="index.html">
+        <button>⬅ Back to Home</button>
+    </a>
+</div>
+
+<script src="config.js"></script>
+<script>
+    fetch(BACKEND_URL + '/graph')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('graph1').innerHTML = data.graph1;
+            document.getElementById('graph2').innerHTML = data.graph2;
+            document.getElementById('graph3').innerHTML = data.graph3;
+        })
+        .catch(err => {
+            document.getElementById('loading').textContent = '❌ Failed to load graphs. Please try again later.';
+            console.error('Graph error:', err);
+        });
+</script>
+
+</body>
+</html>
